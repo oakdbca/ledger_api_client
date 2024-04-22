@@ -14,10 +14,12 @@ class InvoiceOwnerMixin(object):
 
     def check_owner(self, user):
         user_id = user.id
-        order_number = self.get_object().order_number
-        order = utils.Order.objects.get(number=order_number)
-        user = ledger_models.EmailUserRO.objects.get(id=user_id)
-        return order.user_id == user_id or self.is_payment_admin(user)
+        if user_id:
+            order_number = self.get_object().order_number
+            order = utils.Order.objects.get(number=order_number)
+            user = ledger_models.EmailUserRO.objects.get(id=user_id)        
+            return order.user_id == user_id or self.is_payment_admin(user)
+        return False
 
     def dispatch(self, request, *args, **kwargs):
         if not self.check_owner(request.user):
