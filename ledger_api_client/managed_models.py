@@ -54,7 +54,7 @@ class SystemGroup(models.Model):
             spg = SystemGroupPermission.objects.filter(system_group=self)
             for p in spg:
                 spg_array.append(p.emailuser.id)
-                cache.set("managed_models.SystemGroup.get_system_group_member_ids:"+str(self.id), json.dumps(spg_array), 86400)
+            cache.set("managed_models.SystemGroup.get_system_group_member_ids:"+str(self.id), json.dumps(spg_array), 86400)
         else:
             spg_array = json.loads(spg_array_cache)
         return spg_array
