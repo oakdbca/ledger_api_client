@@ -43,6 +43,7 @@ class SystemGroup(models.Model):
         cache.delete("managed_models.SystemGroup.objects.filter(id="+str(self.id)+")") 
         cache.delete("managed_models.SystemGroup.get_system_group_member_ids:"+str(self.id))
         cache.delete("managed_models.SystemGroup.objects.filter(name="+str(self.name)+")")
+        cache.delete("managed_models.SystemGroup.get_system_group_member_ids_active_users:"+str(self.id))
         super(SystemGroup, self).save(*args, **kwargs)
 
     def get_system_group_member_ids(self):
@@ -57,6 +58,20 @@ class SystemGroup(models.Model):
         else:
             spg_array = json.loads(spg_array_cache)
         return spg_array
+    
+    def get_system_group_member_ids_active_users(self):
+        spg_array = []
+        spg_array_cache = cache.get("managed_models.SystemGroup.get_system_group_member_ids_active_users:"+str(self.id))
+        # ,emailuser__active=True
+        if spg_array_cache is None:
+            spg = SystemGroupPermission.objects.filter(system_group=self)
+            for p in spg:
+                if p.emailuser.is_active is True:
+                    spg_array.append(p.emailuser.id)
+                cache.set("managed_models.SystemGroup.get_system_group_member_ids_active_users:"+str(self.id), json.dumps(spg_array), 86400)
+        else:
+            spg_array = json.loads(spg_array_cache)
+        return spg_array    
 
 
 #customer = models.ForeignKey(EmailUser, on_delete=models.PROTECT, blank=True, null=True)
