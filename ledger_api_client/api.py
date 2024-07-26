@@ -543,6 +543,7 @@ def update_account_details(request,user_id):
         payload_data_keys = list(payload.keys())
         url = settings.LEDGER_API_URL+'/ledgergw/remote/update-userid/'+str(user_id)+'/'+api_key+'/'
         myobj = {}
+        myobj["authenticated_ledger_id"] = request.user.id
         for p in payload_data_keys:
             if p in keys_allowed:
                myobj[p] = payload[p]

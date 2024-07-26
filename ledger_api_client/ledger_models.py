@@ -407,7 +407,7 @@ class PermissionsMixinRO(models.Model):
             sgp_groups = json.loads(sgp_cache)
         return sgp_groups
 
-    def system_group_permision_list(self, system_group_id):
+    def system_group_permision_list(self,system_group_id):
         from ledger_api_client import managed_models
 
         permission_list = []
@@ -423,10 +423,8 @@ class PermissionsMixinRO(models.Model):
                 for p in sg.permissions.all():
                     perm_name = p.content_type.app_label + "." + p.codename
                     app_label = p.content_type.app_label
-                    permission_list.append(
-                        {"id": p.id, "perm_name": perm_name, "app_label": app_label}
-                    )
-                cache.set(cache_name_pl, json.dumps(permission_list), 86400)
+                    permission_list.append({"id":p.id, "perm_name" : perm_name, 'app_label': app_label})
+                cache.set(cache_name_pl,json.dumps(permission_list), 86400)
         else:
             permission_list = json.loads(pl_cache)
 
